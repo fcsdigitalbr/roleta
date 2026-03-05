@@ -1,6 +1,9 @@
 import { useState, useCallback } from "react";
 import confetti from "canvas-confetti";
-import casinoBg from "@/assets/casino-bg.jpg";
+import heroDesktop from "@/assets/hero-desktop.webp";
+import heroMobile from "@/assets/hero-mobile.jpeg";
+import logo from "@/assets/logo-roletinha.webp";
+import { useIsMobile } from "@/hooks/use-mobile";
 import NotificationBar from "@/components/NotificationBar";
 import RouletteWheel from "@/components/RouletteWheel";
 import RegistrationForm from "@/components/RegistrationForm";
