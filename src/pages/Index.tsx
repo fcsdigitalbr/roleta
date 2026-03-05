@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import confetti from "canvas-confetti";
 import casinoBg from "@/assets/casino-bg.jpg";
 import NotificationBar from "@/components/NotificationBar";
 import RouletteWheel from "@/components/RouletteWheel";
@@ -16,6 +17,30 @@ const Index = () => {
   const handleSpinEnd = useCallback((segment: string) => {
     setSpinning(false);
     setResult(segment);
+
+    const isWin = segment.includes("BANQUINHA");
+    if (isWin) {
+      const end = Date.now() + 3000;
+      const colors = ["#7C3AED", "#F59E0B", "#10B981", "#EC4899", "#3B82F6"];
+      const frame = () => {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors,
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors,
+        });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      };
+      frame();
+    }
   }, []);
 
   return (
