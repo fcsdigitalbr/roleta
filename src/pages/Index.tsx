@@ -51,10 +51,10 @@ const Index = () => {
     <div className="relative min-h-screen overflow-hidden">
       {/* Background */}
       <div
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${casinoBg})` }}
+        className="fixed inset-0 bg-cover bg-top bg-no-repeat"
+        style={{ backgroundImage: `url(${isMobile ? heroMobile : heroDesktop})` }}
       />
-      <div className="fixed inset-0 bg-background/60 backdrop-blur-sm" />
+      <div className="fixed inset-0 bg-background/40" />
 
       {/* Glow effects */}
       <div className="fixed top-1/4 left-1/4 w-96 h-96 rounded-full bg-secondary/10 blur-[120px]" />
@@ -75,11 +75,10 @@ const Index = () => {
 
         {/* Form Section */}
         <div className="w-full max-w-md space-y-6">
-          {/* Badge */}
+          {/* Logo */}
           <div className="flex justify-center lg:justify-start">
-            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-secondary/20 text-secondary border border-secondary/30">
-              Casal da Bet
-            </span>
+            <img src={logo} alt="Casal da Bet" className="h-16 sm:h-20 object-contain drop-shadow-[0_0_15px_hsl(45,100%,55%,0.5)]" />
+          </div>
           </div>
 
           {/* Title */}
