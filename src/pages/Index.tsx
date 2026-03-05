@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import confetti from "canvas-confetti";
 import casinoBg from "@/assets/casino-bg.jpg";
 import NotificationBar from "@/components/NotificationBar";
 import RouletteWheel from "@/components/RouletteWheel";
