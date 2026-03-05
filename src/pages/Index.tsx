@@ -79,7 +79,6 @@ const Index = () => {
           <div className="flex justify-center lg:justify-start">
             <img src={logo} alt="Casal da Bet" className="h-16 sm:h-20 object-contain drop-shadow-[0_0_15px_hsl(45,100%,55%,0.5)]" />
           </div>
-          </div>
 
           {/* Title */}
           <div className="text-center lg:text-left space-y-3">
