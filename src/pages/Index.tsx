@@ -9,6 +9,7 @@ import RouletteWheel from "@/components/RouletteWheel";
 import RegistrationForm from "@/components/RegistrationForm";
 
 const Index = () => {
+  const isMobile = useIsMobile();
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
