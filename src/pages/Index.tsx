@@ -97,13 +97,17 @@ const Index = () => {
           {spinning ? "GIRANDO..." : "GIRAR A ROLETA!"}
         </button>
 
-        {/* Result */}
-        {result && (
-          <div className="text-center p-4 rounded-xl bg-primary/10 border border-primary/30 animate-in fade-in slide-in-from-bottom-4 w-full max-w-xs">
-            <p className="text-lg font-bold text-primary">Você ganhou: {result}!</p>
-          </div>
-        )}
       </div>
+
+      {/* Result Modal */}
+      {result && (
+        <ResultModal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          result={result}
+          tipo={resultTipo}
+        />
+      )}
     </div>
   );
 };
