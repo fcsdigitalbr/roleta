@@ -3,21 +3,26 @@ import confetti from "canvas-confetti";
 import heroMobile from "@/assets/hero-mobile.jpeg";
 import NotificationBar from "@/components/NotificationBar";
 import RouletteWheel from "@/components/RouletteWheel";
+import ResultModal from "@/components/ResultModal";
 
 const Index = () => {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [resultTipo, setResultTipo] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleSpin = useCallback(() => {
     setSpinning(true);
     setResult(null);
+    setModalOpen(false);
   }, []);
 
   const handleSpinEnd = useCallback((segment: string, tipo: string) => {
     setSpinning(false);
     setResult(segment);
+    setResultTipo(tipo);
+    setModalOpen(true);
 
-    // Confetti for valuable prizes
     const isWin = tipo === "isca" || tipo === "vantagem";
     if (isWin) {
       const end = Date.now() + 3000;
@@ -92,13 +97,17 @@ const Index = () => {
           {spinning ? "GIRANDO..." : "GIRAR A ROLETA!"}
         </button>
 
-        {/* Result */}
-        {result && (
-          <div className="text-center p-4 rounded-xl bg-primary/10 border border-primary/30 animate-in fade-in slide-in-from-bottom-4 w-full max-w-xs">
-            <p className="text-lg font-bold text-primary">Você ganhou: {result}!</p>
-          </div>
-        )}
       </div>
+
+      {/* Result Modal */}
+      {result && (
+        <ResultModal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          result={result}
+          tipo={resultTipo}
+        />
+      )}
     </div>
   );
 };
