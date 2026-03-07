@@ -5,7 +5,6 @@ import NotificationBar from "@/components/NotificationBar";
 import RouletteWheel from "@/components/RouletteWheel";
 
 const Index = () => {
-  const isMobile = useIsMobile();
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
