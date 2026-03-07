@@ -58,7 +58,7 @@ const Index = () => {
       <NotificationBar />
 
       {/* Main content */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-end gap-6 px-4 pb-8 pt-[55vh]">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center gap-4 px-4 py-8">
         {/* Title */}
         <div className="text-center space-y-2">
           <h1 className="text-2xl sm:text-3xl font-black uppercase leading-tight text-foreground text-glow">
@@ -78,9 +78,22 @@ const Index = () => {
           />
         </div>
 
+        {/* Spin Button */}
+        <button
+          onClick={handleSpin}
+          disabled={spinning}
+          className={`w-full max-w-xs py-4 rounded-lg font-extrabold text-lg tracking-wide uppercase transition-all duration-300 ${
+            !spinning
+              ? "bg-primary text-primary-foreground cta-glow hover:brightness-110 active:scale-[0.98]"
+              : "bg-muted text-muted-foreground cursor-not-allowed"
+          }`}
+        >
+          {spinning ? "GIRANDO..." : "GIRAR A ROLETA!"}
+        </button>
+
         {/* Result */}
         {result && (
-          <div className="text-center p-4 rounded-xl bg-primary/10 border border-primary/30 animate-in fade-in slide-in-from-bottom-4">
+          <div className="text-center p-4 rounded-xl bg-primary/10 border border-primary/30 animate-in fade-in slide-in-from-bottom-4 w-full max-w-xs">
             <p className="text-lg font-bold text-primary">{result}</p>
           </div>
         )}
