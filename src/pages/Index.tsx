@@ -47,7 +47,7 @@ const Index = () => {
       {/* Background */}
       <div
         className="fixed inset-0 bg-cover bg-top bg-no-repeat"
-        style={{ backgroundImage: `url(${isMobile ? heroMobile : heroDesktop})` }}
+        style={{ backgroundImage: `url(${heroMobile})` }}
       />
       <div className="fixed inset-0 bg-gradient-to-b from-background/20 via-background/50 to-background/90" />
 
