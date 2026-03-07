@@ -164,11 +164,17 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
               <div>
                 <input
                   type="tel"
-                  placeholder="WhatsApp"
+                  placeholder="(XX) XXXXX-XXXX"
                   value={whatsapp}
-                  onChange={(e) => setWhatsapp(e.target.value)}
+                  onChange={(e) => {
+                    let v = e.target.value.replace(/\D/g, "").slice(0, 11);
+                    if (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+                    else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+                    else if (v.length > 0) v = `(${v}`;
+                    setWhatsapp(v);
+                  }}
                   className={inputClass}
-                  maxLength={20}
+                  maxLength={16}
                 />
                 {errors.whatsapp && <p className="text-xs text-destructive mt-1">{errors.whatsapp}</p>}
               </div>

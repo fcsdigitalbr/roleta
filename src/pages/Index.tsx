@@ -66,36 +66,38 @@ const Index = () => {
       {/* Main content */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center gap-4 px-4 py-8">
         {/* Title */}
-        <div className="text-center space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-black uppercase leading-tight text-foreground text-glow">
-            Roleta Casal da Bet
+        <div className="text-center space-y-3">
+          <p className="text-accent text-xs sm:text-sm font-bold uppercase tracking-[0.3em]">
+            ⚡ Tempo Limitado ⚡
+          </p>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase leading-none text-foreground text-glow">
+            Roleta <span className="text-primary">Casal da Bet</span>
           </h1>
-          <p className="text-muted-foreground text-xs sm:text-sm max-w-sm mx-auto">
-            Gire a roleta e concorra a prêmios. Tempo limitado!
+          <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">
+            Gire e concorra a prêmios exclusivos agora!
           </p>
         </div>
 
-        {/* Wheel Section */}
-        <div className="flex-shrink-0">
+        {/* Wheel Section with center button */}
+        <div className="flex-shrink-0 relative">
           <RouletteWheel
             spinning={spinning}
             onSpin={handleSpin}
             onSpinEnd={handleSpinEnd}
           />
+          {/* Center spin button */}
+          <button
+            onClick={handleSpin}
+            disabled={spinning}
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-20 h-20 sm:w-24 sm:h-24 rounded-full font-black text-xs sm:text-sm uppercase tracking-wide transition-all duration-300 ${
+              !spinning
+                ? "bg-primary text-primary-foreground shadow-[0_0_20px_hsl(100_85%_40%/0.6)] animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite] hover:scale-110 active:scale-95"
+                : "bg-muted text-muted-foreground cursor-not-allowed animate-none"
+            }`}
+          >
+            {spinning ? "..." : "GIRAR"}
+          </button>
         </div>
-
-        {/* Spin Button */}
-        <button
-          onClick={handleSpin}
-          disabled={spinning}
-          className={`w-full max-w-xs py-4 rounded-lg font-extrabold text-lg tracking-wide uppercase transition-all duration-300 ${
-            !spinning
-              ? "bg-primary text-primary-foreground cta-glow hover:brightness-110 active:scale-[0.98]"
-              : "bg-muted text-muted-foreground cursor-not-allowed"
-          }`}
-        >
-          {spinning ? "GIRANDO..." : "GIRAR A ROLETA!"}
-        </button>
 
       </div>
 
