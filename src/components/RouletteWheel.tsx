@@ -1,25 +1,38 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 
 interface WheelSegment {
   label: string;
   color: string;
+  probabilidade: number;
+  tipo: "isca" | "vantagem" | "vazio" | "apenas_ilustracao";
 }
 
 const segments: WheelSegment[] = [
-  { label: "BANQUINHA DE 100", color: "#7C3AED" },
-  { label: "Faltou pouco", color: "#F59E0B" },
-  { label: "BANQUINHA DE 100", color: "#10B981" },
-  { label: "Não foi dessa vez", color: "#EC4899" },
-  { label: "BANQUINHA DE 100", color: "#3B82F6" },
-  { label: "Foi quase!", color: "#EF4444" },
-  { label: "Sem sorte", color: "#F59E0B" },
-  { label: "BANQUINHA DE 100", color: "#8B5CF6" },
-  { label: "Sem prêmio", color: "#06B6D4" },
-  { label: "BANQUINHA DE 100", color: "#22C55E" },
+  { label: "30 giros no touro", color: "#10B981", probabilidade: 20, tipo: "isca" },
+  { label: "50 giros no coelho", color: "#F59E0B", probabilidade: 20, tipo: "isca" },
+  { label: "100 giros no tigre", color: "#7C3AED", probabilidade: 30, tipo: "isca" },
+  { label: "Grupo de sinais", color: "#06B6D4", probabilidade: 5, tipo: "vazio" },
+  { label: "Banca de R$100", color: "#EF4444", probabilidade: 0, tipo: "apenas_ilustracao" },
+  { label: "Você está sem sorte", color: "#EC4899", probabilidade: 5, tipo: "vazio" },
+  { label: "Tente outra vez", color: "#F59E0B", probabilidade: 5, tipo: "vazio" },
+  { label: "Dobra de banca", color: "#3B82F6", probabilidade: 5, tipo: "vantagem" },
+  { label: "Gorjeta R$30,00", color: "#8B5CF6", probabilidade: 5, tipo: "vantagem" },
+  { label: "Grupo VIP do Casal", color: "#22C55E", probabilidade: 5, tipo: "vantagem" },
 ];
 
+function sortearComPeso(): WheelSegment {
+  const pesoTotal = segments.reduce((acc, s) => acc + s.probabilidade, 0);
+  const rand = Math.random() * pesoTotal;
+  let soma = 0;
+  for (const seg of segments) {
+    soma += seg.probabilidade;
+    if (rand <= soma) return seg;
+  }
+  return segments[0];
+}
+
 interface RouletteWheelProps {
-  onSpinEnd?: (segment: string) => void;
+  onSpinEnd?: (segment: string, tipo: string) => void;
   spinning: boolean;
   onSpin: () => void;
 }
@@ -27,26 +40,40 @@ interface RouletteWheelProps {
 const RouletteWheel = ({ spinning, onSpin, onSpinEnd }: RouletteWheelProps) => {
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
-  const hasSpun = useRef(false);
+  const isSpinning = useRef(false);
 
   const handleSpin = useCallback(() => {
-    if (spinning || hasSpun.current) return;
-    hasSpun.current = true;
-    
-    const extraSpins = 5 + Math.random() * 3;
-    const randomAngle = Math.random() * 360;
-    const totalRotation = extraSpins * 360 + randomAngle;
-    
+    if (isSpinning.current) return;
+    isSpinning.current = true;
+
+    // 1. Backend decides the winner
+    const resultado = sortearComPeso();
+    const indiceVencedor = segments.indexOf(resultado);
+
+    // 2. Calculate angle to land on winning segment
+    const grausPorFatia = 360 / segments.length;
+    const anguloAlvo = 360 - (indiceVencedor * grausPorFatia);
+    const variacaoAleatoria = Math.floor(Math.random() * 30) - 15;
+    const girosDeSuspense = 5 * 360;
+
+    const totalRotation = girosDeSuspense + anguloAlvo + variacaoAleatoria;
+
     setRotation(prev => prev + totalRotation);
     onSpin();
 
+    // 3. Wait for animation to finish
     setTimeout(() => {
-      const finalAngle = (rotation + totalRotation) % 360;
-      const segmentAngle = 360 / segments.length;
-      const index = Math.floor((360 - finalAngle) / segmentAngle) % segments.length;
-      onSpinEnd?.(segments[index].label);
-    }, 4500);
-  }, [spinning, rotation, onSpin, onSpinEnd]);
+      isSpinning.current = false;
+      onSpinEnd?.(resultado.label, resultado.tipo);
+    }, 5000);
+  }, [onSpin, onSpinEnd]);
+
+  // Allow external spin trigger
+  useEffect(() => {
+    if (spinning && !isSpinning.current) {
+      handleSpin();
+    }
+  }, [spinning, handleSpin]);
 
   const segmentAngle = 360 / segments.length;
 
@@ -54,7 +81,7 @@ const RouletteWheel = ({ spinning, onSpin, onSpinEnd }: RouletteWheelProps) => {
     <div className="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] lg:w-[480px] lg:h-[480px]">
       {/* Outer glow ring */}
       <div className="absolute inset-[-12px] rounded-full bg-gradient-to-br from-secondary/40 to-accent/20 blur-xl" />
-      
+
       {/* Wheel border */}
       <div className="absolute inset-[-4px] rounded-full bg-gradient-to-br from-accent via-secondary to-accent p-1">
         <div className="w-full h-full rounded-full bg-background" />
@@ -62,7 +89,7 @@ const RouletteWheel = ({ spinning, onSpin, onSpinEnd }: RouletteWheelProps) => {
 
       {/* Pointer */}
       <div className="absolute top-[-18px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
-        <div 
+        <div
           className="w-0 h-0 animate-pulse-ring"
           style={{
             borderLeft: "14px solid transparent",
@@ -81,7 +108,7 @@ const RouletteWheel = ({ spinning, onSpin, onSpinEnd }: RouletteWheelProps) => {
         style={{
           transform: `rotate(${rotation}deg)`,
           transition: spinning
-            ? "transform 4.5s cubic-bezier(0.17, 0.67, 0.12, 0.99)"
+            ? "transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)"
             : "none",
         }}
       >
@@ -116,13 +143,13 @@ const RouletteWheel = ({ spinning, onSpin, onSpinEnd }: RouletteWheelProps) => {
                   dominantBaseline="middle"
                   transform={`rotate(${midAngle}, ${textX}, ${textY})`}
                   fill="white"
-                  fontSize="5.5"
+                  fontSize="5"
                   fontWeight="700"
                   fontFamily="Montserrat, sans-serif"
                   style={{ textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
                 >
-                  {seg.label.length > 14
-                    ? seg.label.substring(0, 14) + "..."
+                  {seg.label.length > 16
+                    ? seg.label.substring(0, 16) + "..."
                     : seg.label}
                 </text>
               </g>
