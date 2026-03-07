@@ -1,11 +1,8 @@
 import { useState, useCallback } from "react";
 import confetti from "canvas-confetti";
-import heroDesktop from "@/assets/hero-desktop.webp";
 import heroMobile from "@/assets/hero-mobile.jpeg";
-import { useIsMobile } from "@/hooks/use-mobile";
 import NotificationBar from "@/components/NotificationBar";
 import RouletteWheel from "@/components/RouletteWheel";
-import RegistrationForm from "@/components/RegistrationForm";
 
 const Index = () => {
   const isMobile = useIsMobile();
