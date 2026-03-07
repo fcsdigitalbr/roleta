@@ -58,9 +58,19 @@ const Index = () => {
       <NotificationBar />
 
       {/* Main content */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-end lg:justify-center lg:flex-row gap-6 lg:gap-16 px-4 pb-8 pt-[55vh] sm:pt-[45vh] lg:py-20">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-end gap-6 px-4 pb-8 pt-[55vh]">
+        {/* Title */}
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-black uppercase leading-tight text-foreground text-glow">
+            Roleta Casal da Bet
+          </h1>
+          <p className="text-muted-foreground text-xs sm:text-sm max-w-sm mx-auto">
+            Gire a roleta e concorra a prêmios. Tempo limitado!
+          </p>
+        </div>
+
         {/* Wheel Section */}
-        <div className="flex-shrink-0 order-2 lg:order-1">
+        <div className="flex-shrink-0">
           <RouletteWheel
             spinning={spinning}
             onSpin={handleSpin}
@@ -68,30 +78,12 @@ const Index = () => {
           />
         </div>
 
-        {/* Form Section */}
-        <div className="w-full max-w-md space-y-4 order-1 lg:order-2">
-          {/* Title */}
-          <div className="text-center lg:text-left space-y-2">
-            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black uppercase leading-tight text-foreground text-glow">
-              Roleta Casal da Bet
-            </h1>
-            <p className="text-muted-foreground text-xs sm:text-sm lg:text-base max-w-sm mx-auto lg:mx-0">
-              Cadastre-se, gire a roleta e concorra a prêmios. Tempo limitado!
-            </p>
+        {/* Result */}
+        {result && (
+          <div className="text-center p-4 rounded-xl bg-primary/10 border border-primary/30 animate-in fade-in slide-in-from-bottom-4">
+            <p className="text-lg font-bold text-primary">{result}</p>
           </div>
-
-          {/* Form Card */}
-          <div className="bg-card/60 backdrop-blur-md border border-border rounded-xl p-4 sm:p-6 box-glow">
-            <RegistrationForm onSubmit={handleSpin} disabled={spinning} />
-          </div>
-
-          {/* Result */}
-          {result && (
-            <div className="text-center p-4 rounded-xl bg-primary/10 border border-primary/30 animate-in fade-in slide-in-from-bottom-4">
-              <p className="text-lg font-bold text-primary">{result}</p>
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
