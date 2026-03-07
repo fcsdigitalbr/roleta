@@ -13,11 +13,12 @@ const Index = () => {
     setResult(null);
   }, []);
 
-  const handleSpinEnd = useCallback((segment: string) => {
+  const handleSpinEnd = useCallback((segment: string, tipo: string) => {
     setSpinning(false);
     setResult(segment);
 
-    const isWin = segment.includes("BANQUINHA");
+    // Confetti for valuable prizes
+    const isWin = tipo === "isca" || tipo === "vantagem";
     if (isWin) {
       const end = Date.now() + 3000;
       const colors = ["#7C3AED", "#F59E0B", "#10B981", "#EC4899", "#3B82F6"];
@@ -94,7 +95,7 @@ const Index = () => {
         {/* Result */}
         {result && (
           <div className="text-center p-4 rounded-xl bg-primary/10 border border-primary/30 animate-in fade-in slide-in-from-bottom-4 w-full max-w-xs">
-            <p className="text-lg font-bold text-primary">{result}</p>
+            <p className="text-lg font-bold text-primary">Você ganhou: {result}!</p>
           </div>
         )}
       </div>
