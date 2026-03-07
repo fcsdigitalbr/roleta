@@ -2,8 +2,10 @@ import { useState, useCallback } from "react";
 import confetti from "canvas-confetti";
 import heroMobile from "@/assets/hero-mobile.jpeg";
 import NotificationBar from "@/components/NotificationBar";
+import CountdownTimer from "@/components/CountdownTimer";
 import RouletteWheel from "@/components/RouletteWheel";
 import ResultModal from "@/components/ResultModal";
+import { playSpinSound, playWinSound, playLoseSound } from "@/hooks/useSoundEffects";
 
 const Index = () => {
   const [spinning, setSpinning] = useState(false);
@@ -15,6 +17,7 @@ const Index = () => {
     setSpinning(true);
     setResult(null);
     setModalOpen(false);
+    playSpinSound();
   }, []);
 
   const handleSpinEnd = useCallback((segment: string, tipo: string) => {
@@ -25,26 +28,29 @@ const Index = () => {
 
     const isWin = tipo === "isca" || tipo === "vantagem";
     if (isWin) {
-      const end = Date.now() + 3000;
+      playWinSound();
+      const end = Date.now() + 1500;
       const colors = ["#7C3AED", "#F59E0B", "#10B981", "#EC4899", "#3B82F6"];
       const frame = () => {
         confetti({
-          particleCount: 3,
+          particleCount: 2,
           angle: 60,
-          spread: 55,
+          spread: 45,
           origin: { x: 0 },
           colors,
         });
         confetti({
-          particleCount: 3,
+          particleCount: 2,
           angle: 120,
-          spread: 55,
+          spread: 45,
           origin: { x: 1 },
           colors,
         });
         if (Date.now() < end) requestAnimationFrame(frame);
       };
       frame();
+    } else {
+      playLoseSound();
     }
   }, []);
 
@@ -65,6 +71,9 @@ const Index = () => {
 
       {/* Main content */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center gap-4 px-4 py-8">
+        {/* Countdown */}
+        <CountdownTimer />
+
         {/* Title */}
         <div className="text-center space-y-3">
           <p className="text-accent text-xs sm:text-sm font-bold uppercase tracking-[0.3em]">
