@@ -158,9 +158,9 @@ const RouletteWheel = ({ spinning, onSpin, onSpinEnd }: RouletteWheelProps) => {
         </svg>
       </div>
 
-      {/* Center hub */}
+      {/* Center hub - now just a transparent area for the external button */}
       <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-accent to-primary shadow-lg border-2 border-accent/50" />
+        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full" />
       </div>
     </div>
   );
