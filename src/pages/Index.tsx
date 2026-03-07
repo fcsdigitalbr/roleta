@@ -3,21 +3,26 @@ import confetti from "canvas-confetti";
 import heroMobile from "@/assets/hero-mobile.jpeg";
 import NotificationBar from "@/components/NotificationBar";
 import RouletteWheel from "@/components/RouletteWheel";
+import ResultModal from "@/components/ResultModal";
 
 const Index = () => {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [resultTipo, setResultTipo] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleSpin = useCallback(() => {
     setSpinning(true);
     setResult(null);
+    setModalOpen(false);
   }, []);
 
   const handleSpinEnd = useCallback((segment: string, tipo: string) => {
     setSpinning(false);
     setResult(segment);
+    setResultTipo(tipo);
+    setModalOpen(true);
 
-    // Confetti for valuable prizes
     const isWin = tipo === "isca" || tipo === "vantagem";
     if (isWin) {
       const end = Date.now() + 3000;
