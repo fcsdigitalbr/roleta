@@ -33,15 +33,12 @@ export const QuizProvider = ({ children }: QuizProviderProps) => {
   });
 
   const getWebhookUrl = () => {
-    // Disable webhooks for testing - return empty string to skip calls
-    return '';
-    
-    // Original webhook URLs (commented out for testing)
-    // if (quizResult === 'MEMBRO') {
-    //   return 'https://n8n.clubemkt.digital/webhook-test/roleta-hot';
-    // } else {
-    //   return 'https://n8n.clubemkt.digital/webhook-test/roleta-cold';
-    // }
+    // Return appropriate webhook URL based on quiz result
+    if (quizResult === 'MEMBRO') {
+      return 'https://n8n.clubemkt.digital/webhook-test/roleta-hot';
+    } else {
+      return 'https://n8n.clubemkt.digital/webhook-test/roleta-cold';
+    }
   };
 
   const handleSetQuizResult = (result: QuizResult) => {

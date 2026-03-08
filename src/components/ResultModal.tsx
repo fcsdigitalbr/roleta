@@ -115,7 +115,8 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Accept": "application/json",
+          "User-Agent": "Roleta-Premios/1.0"
         },
         body: JSON.stringify(payload),
       });
@@ -126,10 +127,17 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
       if (!res.ok) {
         const errorText = await res.text();
         console.error('Error response:', errorText);
-        throw new Error(`HTTP ${res.status}: ${errorText || 'Falha ao enviar'}`);
+        throw new Error(`HTTP ${res.status}: ${errorText || 'Falha ao enviar dados'}`);
       }
 
-      const responseData = await res.text();
+      // Try to parse response as JSON first, fallback to text
+      let responseData;
+      const contentType = res.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        responseData = await res.json();
+      } else {
+        responseData = await res.text();
+      }
       console.log('Success response:', responseData);
 
       toast.success("Dados enviados com sucesso! 🎉");
@@ -139,7 +147,24 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
       onOpenChange(false);
     } catch (error) {
       console.error('Webhook error:', error);
-      toast.error(`Erro ao enviar: ${error instanceof Error ? error.message : 'Tente novamente.'}`);
+      
+      let errorMessage = 'Erro desconhecido. Tente novamente.';
+      
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
+      } else if (error instanceof Error) {
+        if (error.message.includes('HTTP 404')) {
+          errorMessage = 'Serviço temporariamente indisponível. Tente novamente em alguns minutos.';
+        } else if (error.message.includes('HTTP 500')) {
+          errorMessage = 'Erro interno do servidor. Tente novamente em alguns minutos.';
+        } else if (error.message.includes('HTTP 403')) {
+          errorMessage = 'Acesso negado. Entre em contato com o suporte.';
+        } else {
+          errorMessage = `Erro: ${error.message}`;
+        }
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setSending(false);
     }
