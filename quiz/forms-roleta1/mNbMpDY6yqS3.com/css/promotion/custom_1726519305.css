@@ -1,0 +1,22 @@
+._customColorBackground {background-color:var(--page-background-color);}
+/* ._customImageBackground {background-image:var(--page-background-image);} */
+._customFont {font-family:var(--font);} /* Familia Tipográfica */
+._customBackgroundColorBox {background:rgba(var(--container-background-color),1);} /* Color del Contenedor */
+
+.color-1 {color:rgba(var(--main-color),1) !important;}
+.color-2 {color:rgba(var(--main-color),0.8) !important;}
+.color-3 {color:rgba(var(--action-color),1) !important;}
+.color-4 {color:var(--page-background-color) !important;}
+
+.bg-1 {background-color:rgba(var(--main-color),1) !important;}
+.bg-2 {background-color:rgba(var(--main-color),1) !important;}
+.bg-3 {background-color:rgba(var(--action-color),1) !important;}
+.bg-4 {background-color: var(--page-background-color) !important;}
+
+._customColorText-1 {color:rgba(var(--main-color),1) !important;} /* Color del Texto 1 */
+._customColorText-2 {color:rgba(var(--main-color),0.8) !important;} /* Color del Texto 2 */
+._customColorText-3 {color:rgba(var(--action-color),1) !important;} /* Color del Texto 3 */
+._customBackgroundColorButton {background:rgba(var(--action-color),1) !important;} /* Color de fondo del Botón */
+._customColorLink {color:rgba(var(--action-color),0.7) !important;} /* Color del Links */
+._customBordeColor-1 {border-color:rgba(var(--main-color),0.3) !important;} /* Color del Bordes 1 */
+._customBackAlpha-1 {background-color:rgba(var(--main-color),0.1) !important;} /* Color de fondo alfa */

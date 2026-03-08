@@ -1,33 +1,55 @@
 import { useState, useEffect } from "react";
 import { Gift } from "lucide-react";
+import { useQuiz } from "@/contexts/QuizContext";
 
 const names = [
   "Camila", "Lucas", "Fernanda", "João", "Ana Paula",
   "Pedro", "Mariana", "Rafael", "Juliana", "Bruno",
 ];
 
-const prizes = [
-  "ganhou créditos extras!",
-  "ganhou bônus de 50!",
-  "ganhou uma rodada grátis!",
-  "ganhou créditos extras!",
-  "ganhou bônus especial!",
+const membroPrizes = [
+  "ganhou PROMO VIP!",
+  "ganhou desconto VIP exclusivo!",
+  "conquistou oferta especial!",
+  "ganhou acesso VIP!",
+  "vai tentar novamente!",
+  "quase conseguiu, tente mais!",
+];
+
+const novoPrizes = [
+  "ganhou 100 giros 🐅!",
+  "ganhou 50 giros 🐰!",
+  "ganhou 30 giros 🐂!",
+  "entrou no Grupo VIP!",
+  "ganhou gorjeta de R$30!",
+  "dobrou a banca!",
 ];
 
 const NotificationBar = () => {
+  const { quizResult } = useQuiz();
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
 
+  const prizes = quizResult === 'MEMBRO' ? membroPrizes : novoPrizes;
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % names.length);
-        setVisible(true);
-      }, 400);
-    }, 3500);
-    return () => clearInterval(interval);
+    try {
+      const interval = setInterval(() => {
+        setVisible(false);
+        setTimeout(() => {
+          setIndex((prev) => (prev + 1) % names.length);
+          setVisible(true);
+        }, 600); // Increased from 400ms to 600ms for smoother transition
+      }, 6000); // Increased from 3500ms to 6000ms (6 seconds)
+      return () => clearInterval(interval);
+    } catch (error) {
+      console.warn('NotificationBar animation failed:', error);
+    }
   }, []);
+
+  // Safety check for array bounds
+  const currentName = names[index] || names[0];
+  const currentPrize = prizes[index % prizes.length] || prizes[0];
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 flex justify-center py-2 pointer-events-none">
@@ -38,7 +60,7 @@ const NotificationBar = () => {
       >
         <Gift className="w-4 h-4 text-accent" />
         <span className="text-sm font-medium text-foreground">
-          {names[index]} {prizes[index % prizes.length]}
+          {currentName} {currentPrize}
         </span>
       </div>
     </div>

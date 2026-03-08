@@ -1,35 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
-
-interface WheelSegment {
-  label: string;
-  color: string;
-  probabilidade: number;
-  tipo: "isca" | "vantagem" | "vazio" | "apenas_ilustracao";
-}
-
-const segments: WheelSegment[] = [
-  { label: "30 giros no touro", color: "#10B981", probabilidade: 20, tipo: "isca" },
-  { label: "50 giros no coelho", color: "#F59E0B", probabilidade: 20, tipo: "isca" },
-  { label: "100 giros no tigre", color: "#7C3AED", probabilidade: 30, tipo: "isca" },
-  { label: "Grupo de sinais", color: "#06B6D4", probabilidade: 5, tipo: "vazio" },
-  { label: "Banca de R$100", color: "#EF4444", probabilidade: 0, tipo: "apenas_ilustracao" },
-  { label: "Você está sem sorte", color: "#EC4899", probabilidade: 5, tipo: "vazio" },
-  { label: "Tente outra vez", color: "#F59E0B", probabilidade: 5, tipo: "vazio" },
-  { label: "Dobra de banca", color: "#3B82F6", probabilidade: 5, tipo: "vantagem" },
-  { label: "Gorjeta R$30,00", color: "#8B5CF6", probabilidade: 5, tipo: "vantagem" },
-  { label: "Grupo VIP do Casal", color: "#22C55E", probabilidade: 5, tipo: "vantagem" },
-];
-
-function sortearComPeso(): WheelSegment {
-  const pesoTotal = segments.reduce((acc, s) => acc + s.probabilidade, 0);
-  const rand = Math.random() * pesoTotal;
-  let soma = 0;
-  for (const seg of segments) {
-    soma += seg.probabilidade;
-    if (rand <= soma) return seg;
-  }
-  return segments[0];
-}
+import { useQuiz } from "@/contexts/QuizContext";
+import { MEMBRO_SEGMENTS, sortearComPesoMembro, WheelSegment } from "@/config/roulette-membro";
+import { NOVO_SEGMENTS, sortearComPesoNovo } from "@/config/roulette-novo";
 
 interface RouletteWheelProps {
   onSpinEnd?: (segment: string, tipo: string) => void;
@@ -38,35 +10,69 @@ interface RouletteWheelProps {
 }
 
 const RouletteWheel = ({ spinning, onSpin, onSpinEnd }: RouletteWheelProps) => {
+  const { quizResult } = useQuiz();
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
   const isSpinning = useRef(false);
 
+  // Get the appropriate segments based on quiz result (fallback to NOVO for testing)
+  const segments = quizResult === 'MEMBRO' ? MEMBRO_SEGMENTS : NOVO_SEGMENTS;
+  const sortearComPeso = quizResult === 'MEMBRO' ? sortearComPesoMembro : sortearComPesoNovo;
+
+  // Add safety check for segments
+  if (!segments || segments.length === 0) {
+    console.error('No segments available for roulette');
+    return <div>Error: No roulette segments available</div>;
+  }
+
   const handleSpin = useCallback(() => {
     if (isSpinning.current) return;
-    isSpinning.current = true;
+    
+    try {
+      isSpinning.current = true;
 
-    // 1. Backend decides the winner
-    const resultado = sortearComPeso();
-    const indiceVencedor = segments.indexOf(resultado);
+      // 1. Backend decides the winner
+      const resultado = sortearComPeso();
+      if (!resultado) {
+        console.error('No result from sortearComPeso');
+        isSpinning.current = false;
+        return;
+      }
+      
+      const indiceVencedor = segments.findIndex(seg => seg.label === resultado.label);
+      if (indiceVencedor === -1) {
+        console.error('Winner segment not found in segments array');
+        isSpinning.current = false;
+        return;
+      }
 
-    // 2. Calculate angle to land on winning segment
-    const grausPorFatia = 360 / segments.length;
-    const anguloAlvo = 360 - (indiceVencedor * grausPorFatia);
-    const variacaoAleatoria = Math.floor(Math.random() * 30) - 15;
-    const girosDeSuspense = 5 * 360;
+      // 2. Calculate angle to land on winning segment
+      const grausPorFatia = 360 / segments.length;
+      const anguloAlvo = 360 - (indiceVencedor * grausPorFatia);
+      
+      // Add more random variation to land within the segment, not at edges
+      const segmentCenter = grausPorFatia / 2; // Center of the segment
+      const maxVariation = grausPorFatia * 0.3; // 30% of segment width
+      const variacaoAleatoria = (Math.random() - 0.5) * maxVariation; // Random within ±30% of segment
+      const anguloFinal = anguloAlvo - segmentCenter + variacaoAleatoria;
+      
+      const girosDeSuspense = 5 * 360;
 
-    const totalRotation = girosDeSuspense + anguloAlvo + variacaoAleatoria;
+      const totalRotation = girosDeSuspense + anguloFinal;
 
-    setRotation(prev => prev + totalRotation);
-    onSpin();
+      setRotation(prev => prev + totalRotation);
+      onSpin();
 
-    // 3. Wait for animation to finish
-    setTimeout(() => {
+      // 3. Wait for animation to finish
+      setTimeout(() => {
+        isSpinning.current = false;
+        onSpinEnd?.(resultado.label, resultado.tipo);
+      }, 5000);
+    } catch (error) {
+      console.error('Error in handleSpin:', error);
       isSpinning.current = false;
-      onSpinEnd?.(resultado.label, resultado.tipo);
-    }, 5000);
-  }, [onSpin, onSpinEnd]);
+    }
+  }, [onSpin, onSpinEnd, segments, sortearComPeso]);
 
   // Allow external spin trigger
   useEffect(() => {
@@ -78,7 +84,7 @@ const RouletteWheel = ({ spinning, onSpin, onSpinEnd }: RouletteWheelProps) => {
   const segmentAngle = 360 / segments.length;
 
   return (
-    <div className="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] lg:w-[480px] lg:h-[480px]">
+    <div className="relative w-[300px] h-[300px] sm:w-[320px] sm:h-[320px]">
       {/* Outer glow ring */}
       <div className="absolute inset-[-12px] rounded-full bg-gradient-to-br from-secondary/40 to-accent/20 blur-xl" />
 
@@ -143,7 +149,7 @@ const RouletteWheel = ({ spinning, onSpin, onSpinEnd }: RouletteWheelProps) => {
                   dominantBaseline="middle"
                   transform={`rotate(${midAngle}, ${textX}, ${textY})`}
                   fill="white"
-                  fontSize="5"
+                  fontSize="6"
                   fontWeight="700"
                   fontFamily="Montserrat, sans-serif"
                   style={{ textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
@@ -160,7 +166,7 @@ const RouletteWheel = ({ spinning, onSpin, onSpinEnd }: RouletteWheelProps) => {
 
       {/* Center hub - now just a transparent area for the external button */}
       <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full" />
+        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full" />
       </div>
     </div>
   );

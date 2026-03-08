@@ -1,0 +1,428 @@
+.wof canvas {
+    border-radius: 50%;
+    outline: 10px solid var(--wheel-border-color);
+    outline-offset: -1px;
+}
+.wof {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    padding-bottom:35.5px;
+}
+
+.wof__wheel {
+    position: relative;
+}
+
+.wof__wheel.inactive:before {
+    display: block;
+    content: '';
+    background: white;
+    height: 16px;
+    border-radius: 4px;
+    bottom: -11px;
+    position: absolute;
+    width: 100%;
+    box-shadow: 2px 2px 0px 2px rgba(0,0,0,.44);
+}
+
+.wof-form {
+    width: 100%;
+    padding: 20px;
+    max-width: 500px;
+    margin-top: 30px;
+}
+.wof-form__description {
+    word-break: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.nice_text {
+    word-break: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+.wof-form__description ul {
+    list-style-type: "- ";
+    padding-left: 10px;
+    line-height: 1.6;
+    font-size: 92%;
+}
+
+.wof-form button {
+    height: 44px;
+}
+
+.wof-form h1 {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.wof-wheel {
+    justify-content: center;
+    display: flex;
+    /* -webkit-transform: rotate(-55deg);
+    transform: rotate(-55deg); */
+}
+.wof__wheel.inactive .wof-wheel {
+    height: 322px;
+    overflow-y: hidden;
+}
+
+.main-app {
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.fortune-wheel {
+    width: 550px;
+    height: 550px;
+    position: relative;
+    display: inline-block;
+    display: flex;
+    justify-content: center;
+    transform-origin: 0px 0px;
+}
+
+.wof.is-spinning .fortune-wheel {
+    /* transform-origin: center center; */
+}
+.wof.is-spinning {
+    height: 100%;
+}
+
+.fortune-wheel canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.fortune-wheel .centered-spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 87px;
+    height: 87px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    background-color: var(--wheel-border-color);
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+}
+
+.animated-center {
+    transform-origin: center;
+    animation: heartBeat-wheel 1s ease-in-out 0s infinite;
+}
+@keyframes heartBeat-wheel {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.04);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.fortune-wheel .wheel-border {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 998;
+    border: 10px solid rgba(0, 0, 0, .1);
+    border: 8px solid white;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    box-shadow: 2px 2px 0px 2px rgba(0, 0, 0, .44);
+    display: none !important;
+}
+
+.fortune-wheel .wof-border {
+    position: relative;
+    position: relative;
+    display: inline-block;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.25), 0px 0px 7px rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+}
+
+.wof-pointer-svg {
+    color: var(--wheel-pointer-color);
+    transform-origin: 52px 48%;
+}
+
+.fortune-wheel .wof-pointer {
+    width: 75px;
+    height: 80px;
+    position: absolute;
+    z-index: 1000;
+    right: 238px;
+    top: -43px;
+    /* transition: all .2s ease;
+    -webkit-transform-origin: 73.31% 44.89%;
+    transform-origin: 73.31% 44.89%; */
+}
+
+.fortune-wheel .wof-pointer-stroke {
+    color: var(--wheel-border-color);
+}
+
+.wof-form .validation-error-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ff0000a1;
+    color: white;
+    border-radius: 6px;
+    font-size: 12px;
+    min-height: 28px;
+    margin-bottom: 12px;
+    text-align: center;
+    padding: 8px;
+}
+
+.countdown {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.countdown-time {
+    font-size: 26px;
+    padding: 16px 0;
+    text-align: center;
+    border-radius: 6px;
+    width: 100%;
+}
+
+.share-btns{ margin-top: 20px; text-align: center;}
+.share-btns a { font-size: 25px; margin: 8px;}
+
+/* DISABLED - Force mobile layout on all screen sizes */
+/* From 700px display Wheel and Form side by side */
+@media (min-width: 9999px) {
+    .main-app {
+        justify-content: center;
+    }
+
+    .wof {
+        display: flex;
+        flex-direction: row;
+        margin-top: 0px;
+        height: auto;
+        padding-bottom: 0px;
+    }
+
+    .wof-form {
+        max-width: 350px;
+        margin-left: 80px;
+        margin-top: 0;
+    }
+
+    .fortune-wheel { width: 500px; height: 500px;}
+
+    .wof-wheel { align-items: center; display: flex; margin-left: -200px;}
+
+    .fortune-wheel .wof-pointer {
+        right: 213px;
+    }
+
+}
+
+/* DISABLED - Force mobile layout on all screen sizes */
+/* From 768px display Wheel and Form side by side */
+@media (min-width: 9999px) {
+    .main-app {
+        justify-content: center;
+    }
+
+    .wof {
+        display: flex;
+        flex-direction: row;
+        margin-top: 0px;
+        height: auto;
+    }
+
+    .wof-form {
+        padding: 24px;
+        max-width: 420px;
+        margin-left: 10px;
+        margin-top: 0;
+    }
+
+    .fortune-wheel { width: 530px; height: 530px;}
+
+    .wof-wheel { align-items: center; display: flex; margin-left: -200px;}
+
+    .fortune-wheel .wof-pointer {
+        right: 228px;
+    }
+}
+
+/* DISABLED - Force mobile layout on all screen sizes */
+/* From 1025px display Wheel and Form side by side */
+@media (min-width: 9999px) {
+    .main-app {
+        justify-content: center;
+    }
+    .wof {
+        display: flex;
+        flex-direction: row;
+        margin-top: 0px;
+        height: auto;
+    }
+
+    .wof-wheel { align-items: center; display: flex;}
+
+    .wof-wheel { -webkit-transform: rotate(0); transform: rotate(0); margin-left: 0px;}
+
+    .wof-form {
+        max-width: 470px;
+        margin-left: 80px;
+        margin-top: 0;
+    }
+
+    .fortune-wheel { width: 550px; height: 550px;}
+
+    .fortune-wheel .wheel-border {
+        border: 16px solid white;
+    }
+
+    .fortune-wheel .wof-border {
+        border: 12px solid var(--wheel-border-color);
+    }
+
+    .fortune-wheel .wof-pointer {
+        right: 226px;
+    }
+
+}
+
+.coupon-code .tag {
+    margin-bottom: 2px;
+    border-radius: 6px 6px 0 0;
+    padding: 7px 0;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+.coupon-code .coupon {
+    margin-bottom: 2px;
+    border-radius:0 0 6px 6px;
+    padding: 16px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 26px;
+    font-weight: 500;
+}
+.coupon-code__actions {
+    text-align: center;
+    margin-top: 12px;
+}
+.coupon-code .coupon.is-link {
+    /* font-size: 13px; */
+    /* white-space: nowrap; */
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
+}
+.coupon-code .coupon.is-link a {
+    color: inherit !important;
+    padding: 10px;
+    /* text-decoration: underline; */
+}
+
+.download-voucher-link {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+}
+
+.coupon-input {
+    position: relative;
+    cursor: pointer;
+}
+.coupon-input .form-control {
+    height: 52px;
+    padding: 20px;
+    background-color: #fff !important;
+    cursor: pointer;
+    padding-right: 54px;
+}
+.coupon-input .form-control:hover {
+    color: #495057;
+    background-color: #fff;
+    border-color: rgba(var(--main-color), .6);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(var(--main-color), .25);
+}
+.coupon-input .icon {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    width: 28px;
+    height: 28px;
+}
+
+/* FORCE MOBILE LAYOUT ON ALL SCREEN SIZES - OVERRIDE ALL DESKTOP STYLES */
+.wof {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-top: 50px !important;
+    padding-bottom: 35.5px !important;
+}
+
+.wof-form {
+    width: 100% !important;
+    padding: 20px !important;
+    max-width: 500px !important;
+    margin-top: 30px !important;
+    margin-left: 0 !important;
+}
+
+.fortune-wheel {
+    width: 550px !important;
+    height: 550px !important;
+}
+
+.wof-wheel {
+    justify-content: center !important;
+    display: flex !important;
+    margin-left: 0 !important;
+    align-items: center !important;
+}
+
+.main-app {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+}
+/* FORCE MOBILE BACKGROUND ON ALL SCREEN SIZES */
+.page_bg_image {
+    background-image: url('../../img/MOBILE.jpeg') !important;
+    background-size: cover !important;
+    background-position: top center !important;
+    background-repeat: no-repeat !important;
+}

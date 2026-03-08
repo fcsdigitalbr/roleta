@@ -1,0 +1,7 @@
+node_modules/
+data/events.json
+data/form-submissions.json
+logs/
+.env
+.DS_Store
+*.log

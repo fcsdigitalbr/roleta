@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Dashboard CasaldaBet</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(145deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%);
+      color: #fff;
+      padding: 1rem;
+    }
+    .login-box {
+      width: 100%;
+      max-width: 360px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(86,23,211,0.4);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(86,23,211,0.2);
+    }
+    h1 { margin: 0 0 1.5rem; font-size: 1.35rem; text-align: center; color: #fff; }
+    label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; opacity: 0.9; }
+    input[type="password"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border: 2px solid rgba(86,23,211,0.5);
+      border-radius: 10px;
+      background: rgba(0,0,0,0.2);
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #5617d3;
+    }
+    button {
+      width: 100%;
+      padding: 0.85rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #5617d3, #7b3fe8);
+      color: #fff;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.95; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .alert {
+      margin-bottom: 1rem;
+      padding: 0.6rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .alert:empty { display: none; }
+    .alert-error {
+      background: rgba(255,80,80,0.2);
+      border: 1px solid rgba(255,80,80,0.4);
+      color: #ff8888;
+    }
+    .alert-rate {
+      background: rgba(251,191,36,0.2);
+      border: 1px solid rgba(251,191,36,0.4);
+      color: #fcd34d;
+    }
+    .login-logo {
+      display: block;
+      max-width: 120px;
+      height: auto;
+      margin: 0 auto 1.25rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <img src="../logo.png" alt="CasaldaBet" class="login-logo" />
+    <h1>Acesso ao Dashboard</h1>
+    <div class="alert" id="alert" role="alert"></div>
+    <form method="post" action="/login" id="form" autocomplete="on">
+      <label for="password">Senha</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Senha"
+        required
+        autofocus
+        autocomplete="current-password"
+        aria-describedby="alert"
+        aria-invalid="false"
+      />
+      <button type="submit" id="btn-submit">Entrar</button>
+    </form>
+  </div>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var alertEl = document.getElementById("alert");
+      var passwordEl = document.getElementById("password");
+      var btnSubmit = document.getElementById("btn-submit");
+
+      var messages = {
+        invalid: "Credenciais inválidas. Tente novamente.",
+        rate: "Muitas tentativas. Aguarde 15 minutos para tentar novamente."
+      };
+
+      var error = params.get("error");
+      if (error && messages[error]) {
+        alertEl.textContent = messages[error];
+        alertEl.className = "alert " + (error === "rate" ? "alert-rate" : "alert-error");
+        alertEl.setAttribute("role", "alert");
+        if (passwordEl) passwordEl.setAttribute("aria-invalid", "true");
+      }
+
+      document.getElementById("form").addEventListener("submit", function () {
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = "Entrando…";
+      });
+    })();
+  </script>
+</body>
+</html>

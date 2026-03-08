@@ -1,0 +1,41 @@
+.scratch__main{display:flex;justify-content:center;flex-direction:column;align-items:center;padding-bottom:35.5px}
+.scratch-container{display:flex;align-items:center;justify-content:center;width:100%;max-width:400px;margin-top:20px}
+.scratch__game{display:flex;flex-direction:column;align-items:center;max-width:370px;text-align:center;width:100%;padding:24px;margin:20px;min-width:310px}
+.scratch__game .promotion-logo-card{max-width:120px;margin-bottom:20px}
+.scratch__form{min-width:350px;width:100%;max-width:500px;padding:20px}
+.scratch-form__title{margin-bottom:15px;font-family:var(--font-secondary);}
+.scratch__form .promotion-logo-form{max-width:180px;display:block;margin-bottom:23px}
+.scratch-form__description{word-break:break-word;white-space:pre-wrap;overflow-wrap:break-word;max-height:250px;overflow-y:auto}
+.scratch-form__description ul{width:auto;display:inline-block;text-align:left}
+.scratch__form .validation-error-message{display:flex;align-items:center;justify-content:center;background:#ff0000a1;color:#fff;border-radius:6px;font-size:12px;min-height:28px;margin-bottom:12px;text-align:center;padding:8px}
+.scratch-card{width:100%;height:116px;position:relative}
+.scratch-card.disabled{pointer-events:none;opacity:.7;filter:grayscale(1)}
+.scratch-card.disabled::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
+.base,#scratch{height:100%;width:100%;position:absolute;top:0;left:0;text-align:center;cursor:grabbing;border-radius:var(--border-radius)}
+.base{background-color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 1.2em 2.5em rgba(16,2,96,.15)}
+.base h3{font-weight:600;font-size:1.5em;color:#17013b}
+.base h4{font-weight:400;color:#746e7e}
+#scratch{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+@media (min-width:415px){.scratch__game{padding:30px}
+}
+@media (min-width:796px){.scratch__main{flex-direction:row}
+.scratch-card{max-width:400px}
+.scratch__form{margin-left:30px!important;padding:24px;padding-left:0;width:470px}
+.scratch__game{margin:0;padding:30px;max-width:360px}
+}
+@media (min-width:1025px){.scratch__form{max-width:470px;margin-left:80px!important}
+.scratch__game{max-width:400px;padding:40px}
+}
+@keyframes reduced-heartBeat{0%{transform:scale(1)}
+10%{transform:scale(1.02)}
+20%{transform:scale(1.04)}
+30%{transform:scale(1.06)}
+40%{transform:scale(1.06)}
+50%{transform:scale(1.07)}
+60%{transform:scale(1.06)}
+70%{transform:scale(1.06)}
+80%{transform:scale(1.04)}
+90%{transform:scale(1.02)}
+100%{transform:scale(1)}
+}
+.animate__animated.animate__reduced-heartBeat{animation:reduced-heartBeat 0.3s ease-in-out normal;animation-iteration-count:2}

@@ -1,0 +1,53 @@
+:root{--lever-animation-distance:90px}
+.main-container{width:100%;min-height:100%;height:auto;display:flex;justify-content:center;align-items:center;flex-direction:row;overflow-x:hidden}
+.slotMachine-container{display:flex;flex-direction:column;justify-content:center;margin-right:140px}
+.slotMachine-top,.slotMachine-center-wrapper,.slotMachine-center{border:5px solid}
+.slotMachine-top{width:495px;height:58px;border-radius:var(--slot-border-radius,100px) var(--slot-border-radius,100px) 0 0;border-bottom:0;text-align:center;display:flex;justify-content:center;align-items:center}
+.slotMachine-top span{display:flex;font-size:28px;font-family:var(--font-secondary);font-weight:600;font-style:italic;cursor:default}
+.slotMachine-center-wrapper{padding:30px;border-radius:calc(var(--slot-border-radius) * 0.3);position:relative;cursor:pointer}
+.slotMachine-center{overflow:hidden;display:flex;height:150px;box-sizing:content-box;position:relative;border-radius:calc(var(--slot-border-radius) * 0.4)}
+.slotMachine-center .reel{width:150px;height:150px;position:relative;list-style:none;vertical-align:top;margin:0;padding:0;box-sizing:content-box}
+.slotMachine-center .item{width:150px;height:150px;position:relative;list-style:none;vertical-align:top;margin:0;padding:0;box-sizing:content-box;display:flex;justify-content:center}
+.slotMachine-center .innerShadow{background:#fff!important;border-radius:calc(var(--slot-border-radius) * 0.25) 0 0;border-right:3px solid;box-shadow:inset 0 10px 10px rgba(0,0,0,.2),inset 0 -10px 10px rgba(0,0,0,.2)}
+.innerShadow-mid{margin:0 13px;border-radius:0!important;border-left:3px solid;border-right:3px solid}
+.slotMachine-center .innerShadow:last-child{border-radius:0 calc(var(--slot-border-radius) * 0.25) calc(var(--slot-border-radius) * 0.25) 0;border-left:3px solid;border-right:none}
+.slotMachine-center img{max-width:100%;max-height:100%;object-fit:cover;vertical-align:top}
+.slotMachine-prize-container{position:absolute;display:flex;justify-content:center;align-items:center;width:100%;height:55px;bottom:-30px;left:0}
+.slotMachine-prize-text-container{display:flex;justify-content:center;align-items:center;width:90%;height:0;overflow:hidden;transition:height 0.5s ease-in-out;border-radius:var(--slot-border-radius,100px);border-bottom:6px solid}
+.slotMachine-prize-text-container.show{height:55px}
+.slotMachine-prize-text{font-size:28px;font-weight:700;font-style:italic}
+.slotMachine-lever-container{position:absolute;top:50%;right:-57px;display:flex;align-items:center;justify-content:center}
+.slotMachine-lever1{position:absolute;right:12px;height:22px;width:41px;border-top:4px solid;border-bottom:4px solid}
+.slotMachine-lever2{position:absolute;top:-54px;right:-2px;height:65px;width:24px;border-radius:calc(var(--slot-border-radius) * 0.2);border:4px solid;overflow:hidden;transform-origin:bottom}
+.slotMachine-lever-ball{position:absolute;top:-101px;right:-21px;width:60px;height:60px;border:4px solid;border-radius:calc(var(--slot-border-radius) * 0.5);cursor:pointer;z-index:90}
+@keyframes leverMovement{0%{transform:translateY(0)}
+50%{transform:translateY(var(--lever-animation-distance))}
+100%{transform:translateY(0)}
+}
+@keyframes leverArmHidding{0%{transform:scaleY(1)}
+50%{transform:scaleY(.3)}
+100%{transform:scaleY(1)}
+}
+@keyframes zoomIn{0%{transform:scale(1)}
+50%{transform:scale(1.1)}
+100%{transform:scale(1)}
+}
+.slot-machine__form{min-width:350px;max-width:470px;width:100%;margin-top:15px;margin-bottom:5px}
+.slot-machine-form__title{margin-bottom:15px}
+.slot-machine__form .promotion-logo-form{max-width:180px;display:block;margin-bottom:23px}
+.slot-machine-form__description{word-break:break-word;white-space:pre-wrap;overflow-wrap:break-word;max-height:250px;overflow-y:auto}
+.slot-machine-form__description ul{width:auto;display:inline-block;text-align:left}
+.slot-machine__form .validation-error-message{display:flex;align-items:center;justify-content:center;background:#ff0000a1;color:#fff;border-radius:6px;font-size:12px;min-height:28px;margin-bottom:12px;text-align:center;padding:8px}
+@media screen and (max-width:1270px){:root{--lever-animation-distance:70px}
+.slotMachine-container{transform:scale(.9);margin-right:60px}
+.slot-machine__form{padding-left:24px;padding-right:24px}
+}
+@media screen and (max-width:992px){:root{--lever-animation-distance:65px}
+.main-container{flex-direction:column}
+.slotMachine-container{transform:scale(.8);margin-right:0}
+}
+@media screen and (max-width:575px){:root{--lever-animation-distance:35px}
+.slotMachine-container{transform:scale(.7);margin-right:0}
+}
+@media screen and (max-width:430px){.slotMachine-container{transform:scale(.6)}
+}

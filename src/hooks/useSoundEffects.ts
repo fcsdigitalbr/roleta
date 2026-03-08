@@ -1,54 +1,94 @@
-const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+const AudioCtx = typeof window !== 'undefined' ? (window.AudioContext || (window as any).webkitAudioContext) : null;
 
 let ctx: AudioContext | null = null;
 
 function getCtx() {
-  if (!ctx) ctx = new AudioCtx();
+  if (!AudioCtx) return null;
+  if (!ctx) {
+    try {
+      ctx = new AudioCtx();
+    } catch (error) {
+      console.warn('Audio context creation failed:', error);
+      return null;
+    }
+  }
   return ctx;
 }
 
 function playTone(freq: number, duration: number, type: OscillatorType = "sine", gain = 0.15) {
-  const c = getCtx();
-  const osc = c.createOscillator();
-  const g = c.createGain();
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq, c.currentTime);
-  g.gain.setValueAtTime(gain, c.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
-  osc.connect(g).connect(c.destination);
-  osc.start();
-  osc.stop(c.currentTime + duration);
+  try {
+    const c = getCtx();
+    if (!c) return;
+    
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, c.currentTime);
+    g.gain.setValueAtTime(gain, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
+    osc.connect(g).connect(c.destination);
+    osc.start();
+    osc.stop(c.currentTime + duration);
+  } catch (error) {
+    console.warn('Sound playback failed:', error);
+  }
 }
 
 export function playSpinSound() {
-  // Ascending whoosh
-  const c = getCtx();
-  const osc = c.createOscillator();
-  const g = c.createGain();
-  osc.type = "sawtooth";
-  osc.frequency.setValueAtTime(200, c.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(800, c.currentTime + 0.3);
-  g.gain.setValueAtTime(0.08, c.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.5);
-  osc.connect(g).connect(c.destination);
-  osc.start();
-  osc.stop(c.currentTime + 0.5);
+  try {
+    // Ascending whoosh
+    const c = getCtx();
+    if (!c) return;
+    
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(200, c.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(800, c.currentTime + 0.3);
+    g.gain.setValueAtTime(0.08, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.5);
+    osc.connect(g).connect(c.destination);
+    osc.start();
+    osc.stop(c.currentTime + 0.5);
+  } catch (error) {
+    console.warn('Spin sound failed:', error);
+  }
 }
 
 export function playWinSound() {
-  // Happy ascending arpeggio
-  const notes = [523, 659, 784, 1047];
-  notes.forEach((f, i) => {
-    setTimeout(() => playTone(f, 0.3, "sine", 0.12), i * 120);
-  });
+  try {
+    // Happy ascending arpeggio
+    const notes = [523, 659, 784, 1047];
+    notes.forEach((f, i) => {
+      setTimeout(() => playTone(f, 0.3, "sine", 0.12), i * 120);
+    });
+  } catch (error) {
+    console.warn('Win sound failed:', error);
+  }
 }
 
 export function playLoseSound() {
-  // Descending sad tone
-  playTone(400, 0.15, "triangle", 0.1);
-  setTimeout(() => playTone(300, 0.3, "triangle", 0.08), 150);
+  try {
+    // Descending sad tone
+    playTone(400, 0.15, "triangle", 0.1);
+    setTimeout(() => playTone(300, 0.3, "triangle", 0.08), 150);
+  } catch (error) {
+    console.warn('Lose sound failed:', error);
+  }
 }
 
 export function playTickSound() {
-  playTone(1200, 0.03, "square", 0.04);
+  try {
+    playTone(1200, 0.03, "square", 0.04);
+  } catch (error) {
+    console.warn('Tick sound failed:', error);
+  }
+}
+
+export function playClickSound() {
+  try {
+    playTone(800, 0.08, "sine", 0.06);
+  } catch (error) {
+    console.warn('Click sound failed:', error);
+  }
 }

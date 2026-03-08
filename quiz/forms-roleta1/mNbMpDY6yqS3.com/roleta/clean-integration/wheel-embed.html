@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleta – Embed</title>
+    <link rel="stylesheet" href="wheel.css">
+    <style>
+        html, body { margin: 0; min-height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: transparent; }
+        .roleta-embed-root { width: 100%; max-width: 600px; margin: 0 auto; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <div class="roleta-embed-root" id="roleta-clean-wheel"></div>
+    <script src="wheel.js"></script>
+    <script>
+        (function() {
+            RoletaCleanIntegration.init('roleta-clean-wheel');
+
+            window.addEventListener('message', function(event) {
+                if (!event.data || event.data.type !== 'ROLETA_SPIN') return;
+                if (RoletaCleanIntegration.isSpinning()) return;
+
+                var origin = event.origin;
+                var source = event.source;
+
+                RoletaCleanIntegration.spin(function(segmentId, prize, label, isLosing) {
+                    try {
+                        source.postMessage({
+                            type: 'ROLETA_RESULT',
+                            segmentId: segmentId,
+                            prize: prize,
+                            label: label,
+                            isLosing: isLosing
+                        }, origin);
+                    } catch (e) {}
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

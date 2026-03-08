@@ -1,0 +1,74 @@
+/* Roleta – clean integration (pasta roleta). Posição igual à roleta anterior. */
+.roleta-clean-wheel-container {
+    position: relative;
+    width: 600px;
+    max-width: 100%;
+    margin: 0 auto;
+    min-height: 600px;
+}
+
+.roleta-clean-integration {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+.roleta-clean-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.roleta-clean-pointer {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+.roleta-clean-pointer-triangle {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 12px solid #dc2626;
+}
+
+.roleta-clean-pointer-bar {
+    width: 4px;
+    height: 16px;
+    background: #dc2626;
+}
+
+.roleta-clean-wheel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform-origin: 50% 50%;
+}
+
+/* DISABLED - Force mobile layout on all screen sizes */
+@media (min-width: 9999px) {
+    .roleta-clean-wheel-container {
+        min-height: 0;
+        aspect-ratio: 1;
+    }
+    .roleta-clean-integration {
+        width: 100%;
+        max-width: 600px;
+        aspect-ratio: 1;
+        height: auto;
+    }
+}

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Leads Quiz CasaldaBet</title>
+  <style>
+    :root {
+      --bg: #0d0d14;
+      --card: #14141f;
+      --border: rgba(86,23,211,0.35);
+      --accent: #5617d3;
+      --accent-light: #7b3fe8;
+      --text: #e4e4e7;
+      --muted: #71717a;
+      --success: #22c55e;
+      --warning: #eab308;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .layout { display: flex; flex-direction: column; min-height: 100vh; }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .header h1 { margin: 0; font-size: 1.25rem; font-weight: 600; color: #fff; }
+    .header-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-light); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.06); }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-danger { background: #dc2626; color: #fff; }
+    .main { flex: 1; padding: 1.5rem; }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .filters input, .filters select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text);
+      font-size: 0.875rem;
+    }
+    .filters input { min-width: 160px; }
+    .filters input::placeholder { color: var(--muted); }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .stat-card .value { font-size: 1.75rem; font-weight: 700; color: #fbbf24; }
+    .stat-card .label { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+    .funnel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .funnel h3 { margin: 0 0 1rem; font-size: 0.95rem; color: var(--muted); font-weight: 600; }
+    .funnel-bars { display: flex; align-items: flex-end; gap: 0.5rem; flex-wrap: wrap; }
+    .funnel-step {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+    }
+    .funnel-step .bar-wrap { height: 120px; display: flex; align-items: flex-end; justify-content: center; }
+    .funnel-step .bar {
+      width: 100%;
+      max-width: 48px;
+      background: linear-gradient(180deg, var(--accent-light), var(--accent));
+      border-radius: 8px 8px 0 0;
+      min-height: 4px;
+      transition: height 0.3s;
+    }
+    .funnel-step .label { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
+    .funnel-step .num { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); background: var(--card); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    th { background: rgba(86,23,211,0.2); color: #fff; font-weight: 600; font-size: 0.8rem; white-space: nowrap; }
+    th { cursor: pointer; user-select: none; }
+    th:hover { background: rgba(86,23,211,0.3); }
+    tr:hover { background: rgba(255,255,255,0.03); }
+    .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.75rem; font-weight: 500; }
+    .badge-lider { background: rgba(86,23,211,0.4); color: #c4a8ff; }
+    .badge-novo { background: rgba(34,197,94,0.3); color: #86efac; }
+    .badge-cta { background: rgba(251,191,36,0.25); color: #fbbf24; }
+    .events-detail { font-size: 0.75rem; color: var(--muted); max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .error { color: #f87171; margin-top: 0.5rem; font-size: 0.875rem; }
+    .muted { color: var(--muted); font-size: 0.85rem; }
+    .last-update { margin-left: auto; }
+    .header-logo {
+      max-width: 100px;
+      height: auto;
+      display: block;
+      margin-right: 0.75rem;
+    }
+    .header-title { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <header class="header">
+      <div class="header-title">
+        <img src="../logo.png" alt="CasaldaBet" class="header-logo" />
+        <h1>Dashboard — Leads Quiz</h1>
+      </div>
+      <div class="header-actions">
+        <span class="muted last-update" id="last-update"></span>
+        <button type="button" class="btn btn-primary" id="btn-refresh">Atualizar</button>
+        <button type="button" class="btn btn-ghost" id="btn-export">Exportar CSV</button>
+        <a href="/logout" class="btn btn-danger">Sair</a>
+      </div>
+    </header>
+    <main class="main">
+      <div class="filters">
+        <input type="text" id="filter-ip" placeholder="Filtrar por IP" />
+        <select id="filter-ramo">
+          <option value="">Todos os ramos</option>
+          <option value="LIDER">Líder</option>
+          <option value="NOVO">Novo</option>
+        </select>
+        <select id="filter-cta">
+          <option value="">Qualquer CTA</option>
+          <option value="yes">CTA clicado</option>
+          <option value="no">CTA não clicado</option>
+        </select>
+        <select id="filter-form">
+          <option value="">Todos</option>
+          <option value="yes">Com formulário</option>
+          <option value="no">Sem formulário</option>
+        </select>
+        <input type="date" id="filter-date-from" title="Data inicial" />
+        <input type="date" id="filter-date-to" title="Data final" />
+      </div>
+      <div class="stats" id="stats">
+        <div class="stat-card"><div class="value" id="stat-leads">0</div><div class="label">Leads (IPs únicos)</div></div>
+        <div class="stat-card"><div class="value" id="stat-completed">0</div><div class="label">Chegaram à roleta (etapa 7)</div></div>
+        <div class="stat-card"><div class="value" id="stat-cta">0</div><div class="label">Cliques no CTA</div></div>
+        <div class="stat-card"><div class="value" id="stat-lider">0</div><div class="label">Ramo Líder</div></div>
+        <div class="stat-card"><div class="value" id="stat-novo">0</div><div class="label">Ramo Novo</div></div>
+        <div class="stat-card"><div class="value" id="stat-forms">0</div><div class="label">Formulários preenchidos</div></div>
+      </div>
+      <section class="funnel">
+        <h3>Funil de conversão</h3>
+        <div class="funnel-bars" id="funnel-bars"></div>
+      </section>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-sort="ip">IP</th>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Telefone</th>
+              <th data-sort="firstSeen">Primeira vez</th>
+              <th data-sort="lastSeen">Última vez</th>
+              <th data-sort="maxStep">Etapa máx.</th>
+              <th data-sort="ramo">Ramo</th>
+              <th>CTA</th>
+              <th data-sort="eventCount">Eventos</th>
+              <th>Resumo</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <section class="funnel" style="margin-top: 1.5rem;">
+        <h3>Últimas submissões de formulário</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>IP</th>
+                <th>Ramo</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-forms"></tbody>
+          </table>
+        </div>
+      </section>
+      <p class="error" id="error" style="display: none;"></p>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var tbody = document.getElementById("tbody");
+      var errEl = document.getElementById("error");
+      var lastUpdateEl = document.getElementById("last-update");
+      var allLeads = [];
+      var formSubmissions = [];
+      var sortKey = "lastSeen";
+      var sortDir = -1;
+
+      function showError(msg) {
+        errEl.textContent = msg;
+        errEl.style.display = "block";
+      }
+      function hideError() {
+        errEl.style.display = "none";
+      }
+
+      function applyFilters() {
+        var ip = (document.getElementById("filter-ip").value || "").trim().toLowerCase();
+        var ramo = document.getElementById("filter-ramo").value;
+        var cta = document.getElementById("filter-cta").value;
+        var formFilter = document.getElementById("filter-form").value;
+        var from = document.getElementById("filter-date-from").value;
+        var to = document.getElementById("filter-date-to").value;
+        return allLeads.filter(function (l) {
+          if (ip && !(l.ip || "").toLowerCase().includes(ip)) return false;
+          if (ramo && l.ramo !== ramo) return false;
+          if (cta === "yes" && !l.ctaClicked) return false;
+          if (cta === "no" && l.ctaClicked) return false;
+          if (formFilter === "yes" && !l.form) return false;
+          if (formFilter === "no" && l.form) return false;
+          if (from && l.lastSeen && l.lastSeen.slice(0, 10) < from) return false;
+          if (to && l.lastSeen && l.lastSeen.slice(0, 10) > to) return false;
+          return true;
+        });
+      }
+
+      function renderStats(leads) {
+        var completed = leads.filter(function (l) { return l.maxStep >= 7; }).length;
+        var ctaCount = leads.filter(function (l) { return l.ctaClicked; }).length;
+        var lider = leads.filter(function (l) { return l.ramo === "LIDER"; }).length;
+        var novo = leads.filter(function (l) { return l.ramo === "NOVO"; }).length;
+        document.getElementById("stat-leads").textContent = leads.length;
+        document.getElementById("stat-completed").textContent = completed;
+        document.getElementById("stat-cta").textContent = ctaCount;
+        document.getElementById("stat-lider").textContent = lider;
+        document.getElementById("stat-novo").textContent = novo;
+        document.getElementById("stat-forms").textContent = formSubmissions.length;
+      }
+
+      function eventSummary(events) {
+        if (!events || !events.length) return "";
+        return events.slice(-6).map(function (e) {
+          return e.event + (e.step ? " S" + e.step : "") + (e.ramo ? " " + e.ramo : "");
+        }).join(" → ");
+      }
+
+      function formatDate(iso) {
+        if (!iso) return "—";
+        return new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+      }
+
+      function renderFunnel(leads) {
+        var stepCounts = [0,0,0,0,0,0,0,0];
+        leads.forEach(function (l) {
+          var s = Math.min(l.maxStep || 0, 7);
+          for (var i = 1; i <= s; i++) stepCounts[i]++;
+        });
+        var ctaCount = leads.filter(function (l) { return l.ctaClicked; }).length;
+        stepCounts[8] = ctaCount;
+        var max = Math.max.apply(null, stepCounts) || 1;
+        var labels = ["Etapa 1","Etapa 2","Etapa 3","Etapa 4","Etapa 5","Etapa 6","Etapa 7","CTA"];
+        var wrap = document.getElementById("funnel-bars");
+        wrap.innerHTML = "";
+        for (var i = 1; i <= 8; i++) {
+          var div = document.createElement("div");
+          div.className = "funnel-step";
+          var h = (stepCounts[i] / max * 100).toFixed(0);
+          div.innerHTML =
+            "<div class=\"bar-wrap\"><div class=\"bar\" style=\"height:" + h + "%\"></div></div>" +
+            "<div class=\"num\">" + stepCounts[i] + "</div>" +
+            "<div class=\"label\">" + labels[i - 1] + "</div>";
+          wrap.appendChild(div);
+        }
+      }
+
+      function sorted(leads) {
+        var key = sortKey;
+        var d = sortDir;
+        return leads.slice().sort(function (a, b) {
+          var va = a[key];
+          var vb = b[key];
+          if (key === "firstSeen" || key === "lastSeen") {
+            va = va ? new Date(va).getTime() : 0;
+            vb = vb ? new Date(vb).getTime() : 0;
+          }
+          if (va < vb) return -d;
+          if (va > vb) return d;
+          return 0;
+        });
+      }
+
+      function render(leads) {
+        var list = sorted(applyFilters());
+        tbody.innerHTML = "";
+        if (!list.length) {
+          tbody.innerHTML = "<tr><td colspan=\"11\">Nenhum lead encontrado.</td></tr>";
+          return;
+        }
+        list.forEach(function (lead) {
+          var tr = document.createElement("tr");
+          var ramoClass = lead.ramo === "LIDER" ? "badge-lider" : (lead.ramo === "NOVO" ? "badge-novo" : "");
+          var ramoHtml = lead.ramo ? "<span class=\"badge " + ramoClass + "\">" + lead.ramo + "</span>" : "—";
+          var ctaHtml = lead.ctaClicked ? "<span class=\"badge badge-cta\">Sim</span>" : "Não";
+          var f = lead.form || {};
+          tr.innerHTML =
+            "<td>" + (lead.ip || "—") + "</td>" +
+            "<td>" + (f.nome || "—") + "</td>" +
+            "<td>" + (f.email || "—") + "</td>" +
+            "<td>" + (f.telefone || "—") + "</td>" +
+            "<td>" + formatDate(lead.firstSeen) + "</td>" +
+            "<td>" + formatDate(lead.lastSeen) + "</td>" +
+            "<td>" + (lead.maxStep || "—") + "</td>" +
+            "<td>" + ramoHtml + "</td>" +
+            "<td>" + ctaHtml + "</td>" +
+            "<td>" + (lead.eventCount || 0) + "</td>" +
+            "<td class=\"events-detail\" title=\"" + eventSummary(lead.events) + "\">" + eventSummary(lead.events) + "</td>";
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderForms() {
+        var tbodyForms = document.getElementById("tbody-forms");
+        tbodyForms.innerHTML = "";
+        var list = formSubmissions.slice().sort(function (a, b) { return new Date(b.ts) - new Date(a.ts); }).slice(0, 50);
+        if (!list.length) {
+          tbodyForms.innerHTML = "<tr><td colspan=\"6\">Nenhuma submissão de formulário ainda.</td></tr>";
+          return;
+        }
+        list.forEach(function (s) {
+          var tr = document.createElement("tr");
+          tr.innerHTML =
+            "<td>" + formatDate(s.ts) + "</td>" +
+            "<td>" + (s.ip || "—") + "</td>" +
+            "<td><span class=\"badge " + (s.ramo === "LIDER" ? "badge-lider" : "badge-novo") + "\">" + (s.ramo || "—") + "</span></td>" +
+            "<td>" + (s.nome || "—") + "</td>" +
+            "<td>" + (s.email || "—") + "</td>" +
+            "<td>" + (s.telefone || "—") + "</td>";
+          tbodyForms.appendChild(tr);
+        });
+      }
+
+      function exportCsv() {
+        var list = sorted(applyFilters());
+        var headers = ["IP","Nome","E-mail","Telefone","Primeira vez","Última vez","Etapa máx.","Ramo","CTA clicado","Eventos"];
+        var row = function (l) {
+          var f = l.form || {};
+          return [
+            l.ip || "",
+            f.nome || "",
+            f.email || "",
+            f.telefone || "",
+            formatDate(l.firstSeen),
+            formatDate(l.lastSeen),
+            l.maxStep || "",
+            l.ramo || "",
+            l.ctaClicked ? "Sim" : "Não",
+            l.eventCount || 0
+          ];
+        };
+        var csv = headers.join(",") + "\n";
+        list.forEach(function (l) {
+          csv += row(l).map(function (c) { return "\"" + String(c).replace(/"/g, '""') + "\""; }).join(",") + "\n";
+        });
+        var a = document.createElement("a");
+        a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+        a.download = "leads-quiz-" + new Date().toISOString().slice(0,10) + ".csv";
+        a.click();
+      }
+
+      function load() {
+        hideError();
+        tbody.classList.add("loading");
+        fetch("/api/leads", { credentials: "include" })
+          .then(function (r) {
+            if (r.status === 401) { window.location.href = "/login"; return; }
+            return r.json();
+          })
+          .then(function (data) {
+            if (!data) return;
+            tbody.classList.remove("loading");
+            allLeads = data.leads || [];
+            formSubmissions = data.formSubmissions || [];
+            renderStats(allLeads);
+            renderFunnel(allLeads);
+            render(allLeads);
+            renderForms();
+            lastUpdateEl.textContent = "Atualizado: " + new Date().toLocaleTimeString("pt-BR");
+          })
+          .catch(function () {
+            tbody.classList.remove("loading");
+            showError("Não foi possível carregar os dados. Verifique se está logado e se o servidor está rodando.");
+            allLeads = [];
+            formSubmissions = [];
+            render([]);
+            renderForms();
+          });
+      }
+
+      document.getElementById("btn-refresh").addEventListener("click", load);
+      document.getElementById("btn-export").addEventListener("click", exportCsv);
+
+      ["filter-ip","filter-ramo","filter-cta","filter-form","filter-date-from","filter-date-to"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener("change", function () { render(allLeads); });
+      });
+      document.getElementById("filter-ip").addEventListener("input", function () { render(allLeads); });
+
+      document.querySelectorAll("th[data-sort]").forEach(function (th) {
+        th.addEventListener("click", function () {
+          var k = this.getAttribute("data-sort");
+          sortDir = sortKey === k ? -sortDir : 1;
+          sortKey = k;
+          render(allLeads);
+        });
+      });
+
+      load();
+    })();
+  </script>
+</body>
+</html>

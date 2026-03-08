@@ -1,17 +1,15 @@
 import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Gift, Trophy, Frown, Loader2, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
-
-const WEBHOOK_URL = "https://n8n.clubemkt.digital/webhook-test/roleta-hot";
+import { useQuiz } from "@/contexts/QuizContext";
 
 const formSchema = z.object({
   nome: z.string().trim().min(1, "Nome é obrigatório").max(100),
   email: z.string().trim().email("Email inválido").max(255),
   whatsapp: z.string().trim().min(10, "WhatsApp inválido").max(20),
-  idCasalBet: z.string().trim().min(1, "ID é obrigatório").max(50),
   termos: z.literal(true, { errorMap: () => ({ message: "Aceite os termos" }) }),
 });
 
@@ -30,14 +28,14 @@ const tipoConfig: Record<string, {
 }> = {
   isca: {
     icon: Gift,
-    title: "Parabéns! 🎉",
-    description: "Preencha seus dados para resgatar seu prêmio!",
+    title: "PARABÉNS! 🎉",
+    description: "INFORME SEUS E RESGATE SEU PRÊMIO!",
     iconColor: "text-accent",
   },
   vantagem: {
     icon: Trophy,
-    title: "Você ganhou! 🏆",
-    description: "Preencha o formulário para receber sua vantagem exclusiva.",
+    title: "PARABÉNS! 🎉",
+    description: "INFORME SEUS E RESGATE SEU PRÊMIO!",
     iconColor: "text-primary",
   },
   vazio: {
@@ -49,20 +47,31 @@ const tipoConfig: Record<string, {
 };
 
 const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => {
+  const { getWebhookUrl, quizResult } = useQuiz();
   const config = tipoConfig[tipo] || tipoConfig.vazio;
   const Icon = config.icon;
   const isRetry = tipo === "vazio";
 
+  // Customize messages based on quiz result
+  const getCustomTitle = () => {
+    if (isRetry) return config.title;
+    return "PARABÉNS! VOCÊ GANHOU:";
+  };
+
+  const getCustomDescription = () => {
+    if (isRetry) return config.description;
+    return "INFORME SEUS DADOS E RESGATE AGORA!";
+  };
+
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [idCasalBet, setIdCasalBet] = useState("");
   const [termos, setTermos] = useState(false);
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async () => {
-    const parsed = formSchema.safeParse({ nome, email, whatsapp, idCasalBet, termos });
+    const parsed = formSchema.safeParse({ nome, email, whatsapp, termos });
 
     if (!parsed.success) {
       const fieldErrors: Record<string, string> = {};
@@ -78,33 +87,64 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
     setSending(true);
 
     try {
+      const webhookUrl = getWebhookUrl();
+      
+      // Skip webhook call if URL is empty (testing mode)
+      if (!webhookUrl) {
+        console.log('Webhook disabled for testing - skipping API call');
+        toast.success("Dados enviados com sucesso! 🎉 (Modo de teste)");
+        setNome("");
+        setEmail("");
+        setWhatsapp("");
+        setTermos(false);
+        onOpenChange(false);
+        return;
+      }
+
       const payload = {
         nome: parsed.data.nome,
         email: parsed.data.email,
         whatsapp: parsed.data.whatsapp,
-        id_casal_bet: parsed.data.idCasalBet,
         premio: result,
         tipo_premio: tipo,
+        quiz_result: quizResult,
         timestamp: new Date().toISOString(),
       };
 
-      const res = await fetch(WEBHOOK_URL, {
+      console.log('Sending payload to:', webhookUrl);
+      console.log('Quiz result:', quizResult);
+      console.log('Payload:', payload);
+
+      const res = await fetch(webhookUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error("Falha ao enviar");
+      console.log('Response status:', res.status);
+      console.log('Response headers:', Object.fromEntries(res.headers.entries()));
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Error response:', errorText);
+        throw new Error(`HTTP ${res.status}: ${errorText || 'Falha ao enviar'}`);
+      }
+
+      const responseData = await res.text();
+      console.log('Success response:', responseData);
 
       toast.success("Dados enviados com sucesso! 🎉");
       setNome("");
       setEmail("");
       setWhatsapp("");
-      setIdCasalBet("");
       setTermos(false);
       onOpenChange(false);
-    } catch {
-      toast.error("Erro ao enviar. Tente novamente.");
+    } catch (error) {
+      console.error('Webhook error:', error);
+      toast.error(`Erro ao enviar: ${error instanceof Error ? error.message : 'Tente novamente.'}`);
     } finally {
       setSending(false);
     }
@@ -114,21 +154,35 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-card border-border max-w-sm mx-auto p-6 gap-4">
+      <DialogContent 
+        className="bg-card border-border max-w-sm mx-auto p-6 gap-4"
+        aria-describedby="result-description"
+      >
+        <DialogTitle className="sr-only">
+          {config.title}
+        </DialogTitle>
         <div className="flex flex-col items-center gap-3">
           <div className={`w-14 h-14 rounded-full bg-muted flex items-center justify-center ${config.iconColor}`}>
             <Icon className="w-7 h-7" />
           </div>
 
           <h2 className="text-xl font-black uppercase text-foreground text-center">
-            {config.title}
+            {getCustomTitle()}
           </h2>
 
-          <div className="py-2 px-4 rounded-lg bg-primary/10 border border-primary/30">
-            <p className="text-lg font-bold text-primary">{result}</p>
-          </div>
+          {!isRetry && (
+            <div className="py-2 px-4 rounded-lg bg-primary/10 border border-primary/30">
+              <p className="text-lg font-bold text-primary">{result}</p>
+            </div>
+          )}
 
-          <p className="text-sm text-muted-foreground text-center">{config.description}</p>
+          {isRetry && (
+            <div className="py-2 px-4 rounded-lg bg-primary/10 border border-primary/30">
+              <p className="text-lg font-bold text-primary">{result}</p>
+            </div>
+          )}
+
+          <p id="result-description" className="text-sm text-muted-foreground text-center">{getCustomDescription()}</p>
 
           {isRetry ? (
             <button
@@ -177,17 +231,6 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
                   maxLength={16}
                 />
                 {errors.whatsapp && <p className="text-xs text-destructive mt-1">{errors.whatsapp}</p>}
-              </div>
-              <div>
-                <input
-                  type="text"
-                  placeholder="Seu ID no Casal da Bet"
-                  value={idCasalBet}
-                  onChange={(e) => setIdCasalBet(e.target.value)}
-                  className={inputClass}
-                  maxLength={50}
-                />
-                {errors.idCasalBet && <p className="text-xs text-destructive mt-1">{errors.idCasalBet}</p>}
               </div>
 
               <div className="flex items-start gap-3 py-2">

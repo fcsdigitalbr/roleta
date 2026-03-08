@@ -4,23 +4,39 @@ import { Clock } from "lucide-react";
 const DURATION = 15 * 60; // 15 minutes in seconds
 
 function getSecondsLeft() {
-  const stored = sessionStorage.getItem("countdown_start");
-  const start = stored ? Number(stored) : Date.now();
-  if (!stored) sessionStorage.setItem("countdown_start", String(start));
-  const elapsed = Math.floor((Date.now() - start) / 1000);
-  return Math.max(0, DURATION - elapsed);
+  try {
+    const stored = sessionStorage.getItem("countdown_start");
+    const start = stored ? Number(stored) : Date.now();
+    if (!stored) sessionStorage.setItem("countdown_start", String(start));
+    const elapsed = Math.floor((Date.now() - start) / 1000);
+    return Math.max(0, DURATION - elapsed);
+  } catch (error) {
+    console.warn('SessionStorage access failed:', error);
+    return DURATION; // Return full duration if storage fails
+  }
 }
 
 const CountdownTimer = () => {
-  const [seconds, setSeconds] = useState(getSecondsLeft);
+  const [seconds, setSeconds] = useState(() => {
+    try {
+      return getSecondsLeft();
+    } catch (error) {
+      console.warn('Initial countdown calculation failed:', error);
+      return DURATION;
+    }
+  });
 
   useEffect(() => {
-    const id = setInterval(() => {
-      const left = getSecondsLeft();
-      setSeconds(left);
-      if (left <= 0) clearInterval(id);
-    }, 1000);
-    return () => clearInterval(id);
+    try {
+      const id = setInterval(() => {
+        const left = getSecondsLeft();
+        setSeconds(left);
+        if (left <= 0) clearInterval(id);
+      }, 1000);
+      return () => clearInterval(id);
+    } catch (error) {
+      console.warn('Countdown timer failed:', error);
+    }
   }, []);
 
   const mins = Math.floor(seconds / 60);
@@ -38,7 +54,7 @@ const CountdownTimer = () => {
         {String(mins).padStart(2, "0")}:{String(secs).padStart(2, "0")}
       </span>
       <span className="text-xs font-semibold uppercase tracking-wider">
-        restante
+        restantes
       </span>
     </div>
   );
