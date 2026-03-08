@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuiz } from "@/contexts/QuizContext";
 import { playTickSound } from "@/hooks/useSoundEffects";
+import casaldabetLogo from "@/assets/casaldabet-logo.webp";
 
 interface QuizOption {
   texto: string;
@@ -138,6 +139,11 @@ const Quiz = () => {
 
           {/* Logo */}
           <div className="text-center mb-6">
+            <img 
+              src={casaldabetLogo} 
+              alt="Casal da Bet" 
+              className="w-32 h-auto mx-auto mb-4"
+            />
             <h1 className="text-xl font-black text-primary">QUIZ PREMIADO</h1>
             <p className="text-sm text-muted-foreground mt-1">
               Etapa {currentStep} de {QUIZ_STEPS.length}
