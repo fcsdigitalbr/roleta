@@ -8,7 +8,6 @@ import { useQuiz } from "@/contexts/QuizContext";
 
 const formSchema = z.object({
   nome: z.string().trim().min(1, "Nome é obrigatório").max(100),
-  email: z.string().trim().email("Email inválido").max(255),
   whatsapp: z.string().trim().min(10, "WhatsApp inválido").max(20),
   termos: z.literal(true, { errorMap: () => ({ message: "Aceite os termos" }) }),
 });
@@ -64,14 +63,13 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
   };
 
   const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [termos, setTermos] = useState(false);
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async () => {
-    const parsed = formSchema.safeParse({ nome, email, whatsapp, termos });
+    const parsed = formSchema.safeParse({ nome, whatsapp, termos });
 
     if (!parsed.success) {
       const fieldErrors: Record<string, string> = {};
@@ -94,7 +92,6 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
         console.log('Webhook disabled for testing - skipping API call');
         toast.success("Dados enviados com sucesso! 🎉 (Modo de teste)");
         setNome("");
-        setEmail("");
         setWhatsapp("");
         setTermos(false);
         onOpenChange(false);
@@ -103,7 +100,6 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
 
       const payload = {
         nome: parsed.data.nome,
-        email: parsed.data.email,
         whatsapp: parsed.data.whatsapp,
         premio: result,
         tipo_premio: tipo,
@@ -138,7 +134,6 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
 
       toast.success("Dados enviados com sucesso! 🎉");
       setNome("");
-      setEmail("");
       setWhatsapp("");
       setTermos(false);
       onOpenChange(false);
@@ -203,17 +198,6 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
                   maxLength={100}
                 />
                 {errors.nome && <p className="text-xs text-destructive mt-1">{errors.nome}</p>}
-              </div>
-              <div>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={inputClass}
-                  maxLength={255}
-                />
-                {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
               </div>
               <div>
                 <input

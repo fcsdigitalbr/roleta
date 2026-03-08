@@ -8,12 +8,11 @@ interface RegistrationFormProps {
 
 const RegistrationForm = ({ onSubmit, disabled }: RegistrationFormProps) => {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [userId, setUserId] = useState("");
   const [accepted, setAccepted] = useState(false);
 
-  const isValid = name && email && whatsapp && userId && accepted;
+  const isValid = name && whatsapp && userId && accepted;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,13 +29,6 @@ const RegistrationForm = ({ onSubmit, disabled }: RegistrationFormProps) => {
         placeholder="Nome Completo"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className={inputClass}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
         className={inputClass}
       />
       <input

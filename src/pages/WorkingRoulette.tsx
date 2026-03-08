@@ -176,11 +176,6 @@ const WorkingRoulette = () => {
                         className="w-full px-3 py-2 rounded bg-background border border-border text-foreground text-sm"
                       />
                       <input
-                        type="email"
-                        placeholder="Email"
-                        className="w-full px-3 py-2 rounded bg-background border border-border text-foreground text-sm"
-                      />
-                      <input
                         type="tel"
                         placeholder="(XX) XXXXX-XXXX"
                         className="w-full px-3 py-2 rounded bg-background border border-border text-foreground text-sm"
