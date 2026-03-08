@@ -24,7 +24,7 @@ const ProfessionalRouletteWheel = ({ spinning, onSpin, onSpinEnd }: Professional
     let displayText = segment.label;
     
     // Create very short abbreviations for better readability
-    if (segment.label.includes('Promo vip do casal')) {
+    if (segment.label.includes('PROMO VIP')) {
       displayText = 'VIP';
     } else if (segment.label.includes('100 giros 🐅')) {
       displayText = '100🐅';
@@ -38,13 +38,15 @@ const ProfessionalRouletteWheel = ({ spinning, onSpin, onSpinEnd }: Professional
       displayText = 'R$30';
     } else if (segment.label.includes('Dobra de banca')) {
       displayText = 'DOBRA';
+    } else if (segment.label.includes('BANCA R$30')) {
+      displayText = 'R$30';
     } else if (segment.label.includes('Banca de R$100')) {
       displayText = 'R$100';
     } else if (segment.label.includes('Grupo de sinais')) {
       displayText = 'SINAIS';
-    } else if (segment.label.includes('Quase lá')) {
+    } else if (segment.label.includes('Quase!')) {
       displayText = 'QUASE';
-    } else if (segment.label.includes('Próxima vez')) {
+    } else if (segment.label.includes('Tente +')) {
       displayText = 'TENTE';
     } else if (segment.label.includes('Tente outra vez')) {
       displayText = 'TENTE';

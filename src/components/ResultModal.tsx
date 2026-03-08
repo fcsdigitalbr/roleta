@@ -147,8 +147,21 @@ const ResultModal = ({ open, onOpenChange, result, tipo }: ResultModalProps) => 
 
   const inputClass = "w-full px-4 py-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all";
 
+  // Check if form has data or is being submitted
+  const hasFormData = nome.trim() || whatsapp.trim() || termos;
+  const shouldPreventClose = !isRetry && (hasFormData || sending);
+
+  // Handle modal close with prevention logic
+  const handleOpenChange = (open: boolean) => {
+    if (!open && shouldPreventClose) {
+      // Prevent closing if form has data or is sending
+      return;
+    }
+    onOpenChange(open);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent 
         className="bg-card border-border max-w-sm mx-auto p-6 gap-4"
         aria-describedby="result-description"
