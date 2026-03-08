@@ -1,0 +1,8 @@
+name = "roleta-premios"
+compatibility_date = "2024-03-07"
+pages_build_output_dir = "dist"
+
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "src"
