@@ -128,7 +128,7 @@ const Quiz = () => {
            background: "linear-gradient(135deg, hsl(260 70% 15%), hsl(240 50% 10%), hsl(280 60% 12%))" 
          }}>
       <div className="w-full max-w-[375px] mx-auto">
-        <div className="bg-card/80 backdrop-blur-md rounded-2xl p-8 border border-border shadow-2xl">
+        <div className="bg-card/80 backdrop-blur-md rounded-2xl p-8 border border-border shadow-2xl h-[600px] flex flex-col">
           {/* Progress Bar */}
           <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden mb-6">
             <div 
@@ -157,21 +157,23 @@ const Quiz = () => {
             </h2>
           </div>
 
-          {/* Options */}
-          <div className="space-y-3 mb-6">
-            {currentQuizStep.opcoes.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => handleOptionClick(option)}
-                className="w-full p-4 text-left rounded-xl border-2 border-primary/20 bg-primary/5 text-foreground font-medium transition-all duration-200 hover:border-primary/40 hover:bg-primary/10 hover:transform hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]"
-              >
-                {option.texto}
-              </button>
-            ))}
+          {/* Options - Fixed height container */}
+          <div className="flex-1 flex flex-col justify-start">
+            <div className="space-y-3 h-[240px]">
+              {currentQuizStep.opcoes.map((option, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleOptionClick(option)}
+                  className="w-full p-4 text-left rounded-xl border-2 border-primary/20 bg-primary/5 text-foreground font-medium transition-all duration-200 hover:border-primary/40 hover:bg-primary/10 hover:transform hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]"
+                >
+                  {option.texto}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Navigation */}
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mt-6">
             {currentStep > 1 ? (
               <button
                 onClick={handleBack}
