@@ -26,12 +26,12 @@ const ProfessionalRouletteWheel = ({ spinning, onSpin, onSpinEnd }: Professional
     // Create very short abbreviations for better readability
     if (segment.label.includes('Promo vip do casal')) {
       displayText = 'VIP';
-    } else if (segment.label.includes('100 giros no tigre')) {
-      displayText = '100';
-    } else if (segment.label.includes('50 giros no coelho')) {
-      displayText = '50';
-    } else if (segment.label.includes('30 giros no touro')) {
-      displayText = '30';
+    } else if (segment.label.includes('100 giros 🐅')) {
+      displayText = '100🐅';
+    } else if (segment.label.includes('50 giros 🐰')) {
+      displayText = '50🐰';
+    } else if (segment.label.includes('30 giros 🐂')) {
+      displayText = '30🐂';
     } else if (segment.label.includes('Grupo VIP do Casal')) {
       displayText = 'VIP';
     } else if (segment.label.includes('Gorjeta de R$30')) {
@@ -48,6 +48,8 @@ const ProfessionalRouletteWheel = ({ spinning, onSpin, onSpinEnd }: Professional
       displayText = 'TENTE';
     } else if (segment.label.includes('Tente outra vez')) {
       displayText = 'TENTE';
+    } else if (segment.label.includes('Você está sem sorte')) {
+      displayText = 'SEM SORTE';
     }
     
     return {
